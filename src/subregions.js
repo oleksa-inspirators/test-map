@@ -11,10 +11,12 @@ export const subregions = [
     {
         name: 'Опілля',
         villages: [
-            { name: 'Деренівка', coordinates: [49.5560, 25.6413], id: generateRandomKeys() },
+            { name: 'Деренівка', coordinates: [49.2350, 25.7530], id: generateRandomKeys() },
             { name: 'Тернопіль', coordinates: [49.5535, 25.5948], id: generateRandomKeys() },
             { name: 'Теребовля', coordinates: [49.3048, 25.7049], id: generateRandomKeys() },
-            { name: 'Буданів', coordinates: [49.5533, 25.7643], id: generateRandomKeys() },
+            { name: 'Йосипівка', coordinates: [49.2435, 25.2628], id: generateRandomKeys() },
+            { name: 'Бережани', coordinates: [49.4439, 24.9361], id: generateRandomKeys() },
+            { name: 'Буданів', coordinates: [49.1634, 25.7072], id: generateRandomKeys() }, // Updated coordinates
             { name: 'Старе Село', coordinates: [49.7443, 24.3053], id: generateRandomKeys() },
             { name: 'Львів', coordinates: [49.8397, 24.0297], id: generateRandomKeys() },
         ],

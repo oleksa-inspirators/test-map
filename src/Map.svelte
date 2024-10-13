@@ -45,39 +45,81 @@
         return hull.map(village => village.coordinates);
     }
 
-    onMount(() => {
-      map = L.map('map', {
-        center: [49.8419, 24.0315],
-        zoom: 7.3,
-        dragging: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false,
-      });
-  
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-      }).addTo(map);
-  
-      subregions.forEach(subregion => {
-        const villageCoordinates = orderCoordinates(subregion.villages);
-        const polygonColor = getRandomColor();
+    function generateCurvedPath(coordinates) {
+    const curvedPath = [];
+    const waveAmplitude = 0.30; 
 
-        L.polygon(villageCoordinates, {
-          color: 'transparent',
-          fillColor: polygonColor,
-          fillOpacity: 0.5, 
-        })
-        .addTo(map)
-        .bindPopup(`Subregion: ${subregion.name}`);
-      });
+    for (let i = 0; i < coordinates.length; i++) {
+        const start = coordinates[i];
+        const end = coordinates[(i + 1) % coordinates.length]; 
+        
+        const midPoint = [
+            (start[0] + end[0]) / 2,
+            (start[1] + end[1]) / 2 + waveAmplitude * (Math.random() - 0.5)
+        ];
+        
+        curvedPath.push(start, midPoint);
+    }
+    
+    curvedPath.push(coordinates[0]);
+    return curvedPath;
+}
+
+
+    onMount(() => {
+        map = L.map('map', {
+            center: [49.8419, 24.0315],
+            zoom: 7.3,
+            dragging: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+        });
+  
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+  
+        subregions.forEach(subregion => {
+            const villageCoordinates = orderCoordinates(subregion.villages);
+            const polygonColor = getRandomColor();
+
+            const curvedPath = generateCurvedPath(villageCoordinates);
+
+            L.polygon(curvedPath, {
+                color: polygonColor,
+                fillColor: polygonColor,
+                fillOpacity: 0.5,
+                smoothFactor: 1,
+            })
+            .addTo(map)
+            .bindPopup(`Subregion: ${subregion.name}`);
+
+            subregion.villages.forEach(village => {
+                const circle = L.circleMarker(village.coordinates, {
+                    radius: 8,
+                    fillColor: polygonColor,
+                    color: 'transparent',
+                    fillOpacity: 0.5,
+                }).addTo(map);
+
+                circle._path.setAttribute('style', `fill: ${polygonColor}; fill-opacity: 0.5;`);
+                circle.bindPopup(`Village: ${village.name}`)
+                    .on('mouseover', function (e) {
+                        this.openPopup();
+                    })
+                    .on('mouseout', function (e) {
+                        this.closePopup();
+                    });
+            });
+        });
     });
 </script>
 
 <style>
     #map {
-      width: 100%;
-      height: 100vh;
+        width: 100%;
+        height: 100vh;
     }
 </style>
 
