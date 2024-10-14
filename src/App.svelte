@@ -4,5 +4,6 @@
   
   <main>
 	<Map />
+  
   </main>
   
